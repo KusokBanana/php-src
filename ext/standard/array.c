@@ -5953,6 +5953,61 @@ PHP_FUNCTION(array_filter)
 }
 /* }}} */
 
+/* {{{ Finds element from the array via the callback. */
+PHP_FUNCTION(array_find)
+{
+	zval *array;
+	zend_fcall_info fci = empty_fcall_info;
+	zend_fcall_info_cache fci_cache = empty_fcall_info_cache;
+	zval retval;
+	zend_ulong num_key;
+	zend_string *string_key;
+	zval *operand;
+	zval args[2];
+
+	ZEND_PARSE_PARAMETERS_START(2, 2)
+		Z_PARAM_ARRAY(array)
+		Z_PARAM_FUNC(fci, fci_cache)
+	ZEND_PARSE_PARAMETERS_END();
+
+	if (zend_hash_num_elements(Z_ARRVAL_P(array)) == 0) {
+		RETVAL_NULL();
+		return;
+	}
+
+	fci.retval = &retval;
+	fci.param_count = 2;
+	fci.params = args;
+
+	ZEND_HASH_FOREACH_KEY_VAL_IND(Z_ARRVAL_P(array), num_key, string_key, operand) {
+		ZVAL_COPY_DEREF(&args[0], operand);
+
+		if (string_key) {
+			ZVAL_STR_COPY(&args[1], string_key);
+		} else {
+			ZVAL_LONG(&args[1], num_key);
+		}
+
+		zval_ptr_dtor(&args[0]);
+		zval_ptr_dtor(&args[1]);
+
+		if (zend_call_function(&fci, &fci_cache) == SUCCESS) {
+
+			int retval_true = zend_is_true(&retval);
+			zval_ptr_dtor(&retval);
+			if (retval_true) {
+				ZVAL_COPY_DEREF(return_value, operand);
+				return;
+			}
+		} else {
+			return;
+		}
+
+		zval_add_ref(operand);
+	} ZEND_HASH_FOREACH_END();
+}
+/* }}} */
+
 /* {{{ Applies the callback to the elements in given arrays. */
 PHP_FUNCTION(array_map)
 {

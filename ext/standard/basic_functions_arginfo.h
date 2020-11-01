@@ -336,6 +336,11 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_array_filter, 0, 1, IS_ARRAY, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, mode, IS_LONG, 0, "0")
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_array_find, 0, 2, IS_ARRAY, 0)
+	ZEND_ARG_TYPE_INFO(0, array, IS_ARRAY, 0)
+	ZEND_ARG_TYPE_INFO(0, callback, IS_CALLABLE, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_array_map, 0, 2, IS_ARRAY, 0)
 	ZEND_ARG_TYPE_INFO(0, callback, IS_CALLABLE, 1)
 	ZEND_ARG_TYPE_INFO(0, array, IS_ARRAY, 0)
@@ -2305,6 +2310,7 @@ ZEND_FUNCTION(array_sum);
 ZEND_FUNCTION(array_product);
 ZEND_FUNCTION(array_reduce);
 ZEND_FUNCTION(array_filter);
+ZEND_FUNCTION(array_find);
 ZEND_FUNCTION(array_map);
 ZEND_FUNCTION(array_key_exists);
 ZEND_FUNCTION(array_chunk);
@@ -2928,6 +2934,7 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(array_product, arginfo_array_product)
 	ZEND_FE(array_reduce, arginfo_array_reduce)
 	ZEND_FE(array_filter, arginfo_array_filter)
+	ZEND_FE(array_find, arginfo_array_find)
 	ZEND_FE(array_map, arginfo_array_map)
 	ZEND_FE(array_key_exists, arginfo_array_key_exists)
 	ZEND_FALIAS(key_exists, array_key_exists, arginfo_key_exists)
